@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:collection';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:gallery/data/gallery_options.dart';
@@ -185,46 +186,43 @@ class _SettingsListItemState<T> extends State<SettingsListItem<T>>
     );
   }
 
+  Widget _optionsWidget(T value, DisplayOption displayOption) {
+    final theme = Theme.of(context);
+    return RadioListTile<T>(
+      value: value,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            displayOption.title,
+            style: theme.textTheme.bodyText1.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+          if (displayOption.subtitle != null)
+            Text(
+              displayOption.subtitle,
+              style: theme.textTheme.bodyText1.copyWith(
+                fontSize: 12,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onPrimary
+                    .withOpacity(0.8),
+              ),
+            ),
+        ],
+      ),
+      groupValue: widget.selectedOption,
+      onChanged: (newOption) => widget.onOptionChanged(newOption),
+      activeColor: Theme.of(context).colorScheme.primary,
+      dense: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _handleExpansion();
     final theme = Theme.of(context);
-
-    final optionWidgetsList = <Widget>[];
-
-    widget.options.forEach(
-      (optionValue, optionDisplay) => optionWidgetsList.add(
-        RadioListTile<T>(
-          value: optionValue,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                optionDisplay.title,
-                style: theme.textTheme.bodyText1.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-              if (optionDisplay.subtitle != null)
-                Text(
-                  optionDisplay.subtitle,
-                  style: theme.textTheme.bodyText1.copyWith(
-                    fontSize: 12,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onPrimary
-                        .withOpacity(0.8),
-                  ),
-                ),
-            ],
-          ),
-          groupValue: widget.selectedOption,
-          onChanged: (newOption) => widget.onOptionChanged(newOption),
-          activeColor: Theme.of(context).colorScheme.primary,
-          dense: true,
-        ),
-      ),
-    );
 
     return AnimatedBuilder(
       animation: _controller.view,
@@ -239,12 +237,26 @@ class _SettingsListItemState<T> extends State<SettingsListItem<T>>
             ),
           ),
         ),
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) => optionWidgetsList[index],
-          itemCount: widget.isExpanded ? optionWidgetsList.length : 0,
+        child: SizedBox(
+          // 48.0 is the height of a single line RadioListTile
+          height: 48.0 * math.min(5.0, widget.options.length),
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              final entry = widget.options.entries.toList()[index];
+              return _optionsWidget(entry.key, entry.value);
+            },
+          itemCount: widget.isExpanded ? widget.options.length : 0,
+          ),
         ),
+//        child: ListView.builder(
+//          shrinkWrap: true,
+//          physics: const NeverScrollableScrollPhysics(),
+//          itemBuilder: (context, index) {
+//            final entry = widget.options.entries.toList()[index];
+//            return _optionsWidget(entry.key, entry.value);
+//          },
+//          itemCount: widget.isExpanded ? widget.options.length : 0,
+//        ),
       ),
     );
   }
