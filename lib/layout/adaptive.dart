@@ -28,6 +28,26 @@ DisplayType displayTypeOf(BuildContext context) {
   }
 }
 
+//DisplayType displayTypeOf(BuildContext context) {
+//  final width = MediaQuery.of(context).size.width;
+//
+//  if (width > _desktopPortraitBreakpoint) {
+//    return DisplayType.desktop;
+//  } else {
+//    return DisplayType.mobile;
+//  }
+//}
+
+//DisplayType displayTypeOf(BuildContext context) {
+//  final orientation = MediaQuery.of(context).orientation;
+//
+//  if (orientation == Orientation.landscape) {
+//    return DisplayType.desktop;
+//  } else {
+//    return DisplayType.mobile;
+//  }
+//}
+
 /// Returns a boolean if we are in a display of [DisplayType.desktop]. Used to
 /// build adaptive and responsive layouts.
 bool isDisplayDesktop(BuildContext context) {

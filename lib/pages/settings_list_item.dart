@@ -244,7 +244,15 @@ class _SettingsListItemState<T> extends State<SettingsListItem<T>>
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) => optionWidgetsList[index],
           itemCount: widget.isExpanded ? optionWidgetsList.length : 0,
+          itemExtent: 56,
         ),
+//        child: Column(
+//          mainAxisSize: MainAxisSize.min,
+//          children: [
+//            for (final widget in optionWidgetsList)
+//              SizedBox(height: 56, child: widget)
+//          ],
+//        )
       ),
     );
   }
